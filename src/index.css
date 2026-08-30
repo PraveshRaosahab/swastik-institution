@@ -1,0 +1,152 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy-950: #060B18;
+  --color-navy-900: #0A1128;
+  --color-navy-800: #101A3A;
+  --color-navy-700: #182452;
+  --color-royal-500: #3355FF;
+  --color-royal-400: #5C7CFF;
+  --color-indigo-500: #6C4CF0;
+  --color-violet-500: #8B5CF6;
+  --color-cyan-400: #2FE0F5;
+  --color-gold-400: #EEC468;
+  --color-mist-50: #F6F8FC;
+  --color-mist-100: #EEF2FA;
+  --color-ink-900: #0E1526;
+  --color-ink-600: #47506B;
+  --color-ink-400: #7A83A0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-mist-50);
+  color: var(--color-ink-900);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--color-royal-500);
+  color: white;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-cyan-400);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, #7C9BFF 0%, #9C8CFF 45%, #2FE0F5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(124,155,255,0.6), rgba(139,92,246,0.4), rgba(47,224,245,0.4));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.scene {
+  perspective: 1400px;
+}
+
+.orbit-stage {
+  transform-style: preserve-3d;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-16px) rotate(var(--r, 0deg)); }
+}
+
+@keyframes drift-rotate {
+  0% { transform: rotateY(0deg) rotateX(6deg); }
+  100% { transform: rotateY(360deg) rotateX(6deg); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+}
+
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: drift-rotate 32s linear infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 40s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .animate-drift, .animate-spin-slow, .animate-pulse-glow {
+    animation: none;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
