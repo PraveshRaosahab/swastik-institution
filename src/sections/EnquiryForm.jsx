@@ -22,7 +22,7 @@ import { WHATSAPP_LINK, PHONE_DISPLAY } from "../data/contact";
 // ── Web3Forms access key ──────────────────────────────────────────────
 // Replace this with your real Web3Forms access key.
 // Get one free at https://web3forms.com/
-const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
+const WEB3FORMS_ACCESS_KEY = "12918372-8f20-46eb-b491-607a19f8e529";
 
 // ── Options ───────────────────────────────────────────────────────────
 const CLASS_OPTIONS = Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`);
