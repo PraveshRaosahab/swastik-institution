@@ -5,6 +5,7 @@ import Hero from "./sections/Hero";
 import About from "./sections/About";
 import Courses from "./sections/Courses";
 import WhyChooseUs from "./sections/WhyChooseUs";
+import EnquiryForm from "./sections/EnquiryForm";
 import Interactive3D from "./sections/Interactive3D";
 import LearningJourney from "./sections/LearningJourney";
 import Testimonials from "./sections/Testimonials";

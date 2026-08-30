@@ -13,6 +13,7 @@ export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIC
   WHATSAPP_MESSAGE
 )}`;
 
+export const BUSINESS_EMAIL = "freefiredrone1@gmail.com";
 export const ADDRESS = "Subhash Nagar, Ludhiana, Punjab, India";
 export const ADDRESS_MAPS_LINK =
   "https://www.google.com/maps/search/?api=1&query=" +
