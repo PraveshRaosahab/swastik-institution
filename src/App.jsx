@@ -26,6 +26,7 @@ function App() {
         <LearningJourney />
         <Testimonials />
         <CTA />
+        <EnquiryForm />
         <Contact />
       </main>
       <Footer />
