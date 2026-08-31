@@ -31,6 +31,8 @@ const CLASS_OPTIONS = Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`);
 
 const SUBJECT_OPTIONS = [
   "English",
+  "Hindi",
+  "Punjabi",
   "Social Science",
   "Science",
   "Mathematics",
@@ -173,8 +175,8 @@ function MultiSelectDropdown({ id, options, selected, onChange, onBlur, hasError
                   >
                     <span
                       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${checked
-                          ? "border-cyan-400 bg-cyan-400/90 text-navy-950"
-                          : "border-white/25 bg-white/5"
+                        ? "border-cyan-400 bg-cyan-400/90 text-navy-950"
+                        : "border-white/25 bg-white/5"
                         }`}
                     >
                       {checked && <Check size={13} strokeWidth={3} />}
