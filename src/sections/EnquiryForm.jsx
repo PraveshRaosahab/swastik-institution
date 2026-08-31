@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Send,
@@ -16,20 +16,26 @@ import {
   School,
   BookMarked,
   MessageSquare,
+  Check,
+  ChevronDown,
 } from "lucide-react";
 import { WHATSAPP_LINK, PHONE_DISPLAY } from "../data/contact";
 
 // ── Web3Forms access key ──────────────────────────────────────────────
 // Replace this with your real Web3Forms access key.
 // Get one free at https://web3forms.com/
-const WEB3FORMS_ACCESS_KEY = "12918372-8f20-46eb-b491-607a19f8e529";
+const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
 
 // ── Options ───────────────────────────────────────────────────────────
 const CLASS_OPTIONS = Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`);
 
-const COURSE_OPTIONS = [
-  "Classes 1–10 — All Subjects",
-  "Classes 11–12 — Non-Medical",
+const SUBJECT_OPTIONS = [
+  "English",
+  "Social Science",
+  "Science",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
   "Spoken English",
 ];
 
@@ -46,7 +52,8 @@ function validate(values) {
   if (!values.phone || !PHONE_REGEX.test(values.phone.replace(/\s/g, "")))
     errors.phone = "Please enter a valid Indian mobile number.";
   if (!values.studentClass) errors.studentClass = "Please select a class.";
-  if (!values.course) errors.course = "Please select a course.";
+  if (!values.courses || values.courses.length === 0)
+    errors.courses = "Please select at least one subject/course.";
   return errors;
 }
 
@@ -90,6 +97,100 @@ const inputBase =
 const selectBase =
   "w-full cursor-pointer appearance-none rounded-xl border border-white/15 bg-white/8 px-4 py-3.5 text-sm text-white backdrop-blur-sm transition-all duration-300 outline-none form-glow focus:border-cyan-400/50 focus:bg-white/12";
 
+// ── Multi-select checkbox dropdown ────────────────────────────────────
+function MultiSelectDropdown({ id, options, selected, onChange, onBlur, hasError, placeholder }) {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleOpen = () => {
+    setOpen((o) => {
+      const next = !o;
+      if (o) onBlur?.(); // closing -> mark as touched
+      return next;
+    });
+  };
+
+  const toggleOption = (option) => {
+    const isSelected = selected.includes(option);
+    const next = isSelected
+      ? selected.filter((s) => s !== option)
+      : [...selected, option];
+    onChange(next);
+  };
+
+  const summary =
+    selected.length === 0
+      ? placeholder
+      : selected.length <= 2
+        ? selected.join(", ")
+        : `${selected.length} subjects selected`;
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <button
+        type="button"
+        id={id}
+        onClick={toggleOpen}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className={`${selectBase} flex items-center justify-between text-left ${selected.length === 0 ? "text-white/40" : ""
+          } ${hasError ? "border-red-400/60" : ""}`}
+      >
+        <span className="truncate">{summary}</span>
+        <ChevronDown
+          size={16}
+          className={`ml-2 shrink-0 text-white/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          aria-multiselectable="true"
+          className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-white/15 bg-navy-900/95 shadow-2xl shadow-navy-950/50 backdrop-blur-md"
+        >
+          <ul className="max-h-64 overflow-y-auto py-1.5">
+            {options.map((option) => {
+              const checked = selected.includes(option);
+              return (
+                <li key={option}>
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={checked}
+                    onClick={() => toggleOption(option)}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-white/90 transition-colors hover:bg-white/8"
+                  >
+                    <span
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${checked
+                          ? "border-cyan-400 bg-cyan-400/90 text-navy-950"
+                          : "border-white/25 bg-white/5"
+                        }`}
+                    >
+                      {checked && <Check size={13} strokeWidth={3} />}
+                    </span>
+                    {option}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ══════════════════════════════════════════════════════════════════════
 export default function EnquiryForm() {
   const formRef = useRef(null);
@@ -99,7 +200,7 @@ export default function EnquiryForm() {
     email: "",
     phone: "",
     studentClass: "",
-    course: "",
+    courses: [],
     message: "",
   });
   const [errors, setErrors] = useState({});
@@ -125,12 +226,12 @@ export default function EnquiryForm() {
     e.preventDefault();
     const validationErrors = validate(values);
     setErrors(validationErrors);
-    setTouched({ name: true, email: true, phone: true, studentClass: true, course: true });
+    setTouched({ name: true, email: true, phone: true, studentClass: true, courses: true });
 
     if (Object.keys(validationErrors).length > 0) {
       // Focus the first invalid field
       const firstKey = Object.keys(validationErrors)[0];
-      const fieldMap = { name: "enquiry-name", email: "enquiry-email", phone: "enquiry-phone", studentClass: "enquiry-class", course: "enquiry-course" };
+      const fieldMap = { name: "enquiry-name", email: "enquiry-email", phone: "enquiry-phone", studentClass: "enquiry-class", courses: "enquiry-course" };
       document.getElementById(fieldMap[firstKey])?.focus();
       return;
     }
@@ -146,7 +247,7 @@ export default function EnquiryForm() {
         email: values.email.trim(),
         phone: values.phone.trim(),
         class: values.studentClass,
-        course: values.course,
+        courses: values.courses.join(", "),
         message: values.message.trim() || "(No message)",
       };
 
@@ -160,7 +261,7 @@ export default function EnquiryForm() {
 
       if (data.success) {
         setStatus("success");
-        setValues({ name: "", email: "", phone: "", studentClass: "", course: "", message: "" });
+        setValues({ name: "", email: "", phone: "", studentClass: "", courses: [], message: "" });
         setTouched({});
         setErrors({});
       } else {
@@ -176,7 +277,7 @@ export default function EnquiryForm() {
     return (
       <section
         id="enquire"
-        className="relative overflow-hidden bg-gradient-to-br from-navy-950 via-navy-900 to-indigo-500/20 py-24 sm:py-32"
+        className="relative overflow-hidden bg-gradient-to-br from-navy-950 via-navy-900 to-indigo-500/20 pt-32 pb-24 sm:pt-40 sm:pb-32"
       >
         {/* particles */}
         <Particles />
@@ -225,7 +326,7 @@ export default function EnquiryForm() {
   return (
     <section
       id="enquire"
-      className="relative overflow-hidden bg-gradient-to-br from-navy-950 via-navy-900 to-indigo-500/20 py-24 sm:py-32"
+      className="relative overflow-hidden bg-gradient-to-br from-navy-950 via-navy-900 to-indigo-500/20 pt-32 pb-24 sm:pt-40 sm:pb-32"
     >
       {/* ambient particles */}
       <Particles />
@@ -395,38 +496,23 @@ export default function EnquiryForm() {
                 </div>
               </Field>
 
-              {/* ── Course ───────────────────────────────────────── */}
+              {/* ── Course / Subjects (multi-select) ─────────────── */}
               <div className="sm:col-span-2">
                 <Field
                   id="enquiry-course"
-                  label="Course Interested In"
+                  label="Subjects / Course Interested In"
                   icon={BookMarked}
-                  error={touched.course && errors.course}
+                  error={touched.courses && errors.courses}
                 >
-                  <div className="relative">
-                    <select
-                      id="enquiry-course"
-                      required
-                      value={values.course}
-                      onChange={(e) => set("course", e.target.value)}
-                      onBlur={() => touch("course")}
-                      className={`${selectBase} ${!values.course ? "text-white/40" : ""} ${touched.course && errors.course ? "border-red-400/60" : ""}`}
-                    >
-                      <option value="" disabled>
-                        Select a course
-                      </option>
-                      {COURSE_OPTIONS.map((c) => (
-                        <option key={c} value={c} className="bg-navy-900 text-white">
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/40">
-                      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </div>
-                  </div>
+                  <MultiSelectDropdown
+                    id="enquiry-course"
+                    options={SUBJECT_OPTIONS}
+                    selected={values.courses}
+                    onChange={(next) => set("courses", next)}
+                    onBlur={() => touch("courses")}
+                    hasError={touched.courses && !!errors.courses}
+                    placeholder="Select one or more subjects"
+                  />
                 </Field>
               </div>
 
