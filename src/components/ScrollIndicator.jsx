@@ -24,7 +24,7 @@ export default function ScrollIndicator({ className = "" }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
                     transition={{ duration: 0.6 }}
-                    className={`pointer-events-none absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-8 ${className}`}
+                    className={`pointer-events-none fixed bottom-6 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-8 ${className}`}
                 >
                     <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/50">
                         Scroll
