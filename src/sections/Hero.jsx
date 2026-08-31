@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { BookOpen, GraduationCap, PenLine, Sigma, Lightbulb, Atom } from "lucide-react";
 import { CallButton, WhatsAppButton } from "../components/ContactButtons";
+import ScrollIndicator from "../components/ScrollIndicator";
 
 const container = {
   hidden: {},
@@ -110,12 +112,12 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-4">
-            <a
-              href="#courses"
+            <Link
+              to="/courses"
               className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-royal-500 to-indigo-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-royal-500/30 transition-all hover:-translate-y-0.5 hover:shadow-xl"
             >
               Explore Courses
-            </a>
+            </Link>
             <CallButton size="lg" variant="outline" />
           </motion.div>
 
@@ -148,6 +150,8 @@ export default function Hero() {
           <OrbitScene />
         </motion.div>
       </div>
+
+      <ScrollIndicator />
     </section>
   );
 }
